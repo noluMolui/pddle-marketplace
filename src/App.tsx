@@ -150,9 +150,24 @@ export function App() {
               Showing {filteredItems.length} available {filteredItems.length === 1 ? 'item' : 'items'}
             </div>
 
-            {filteredItems.length === 0 && (
+            {filteredItems.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '48px', border: '2px dashed #a8a29e', backgroundColor: '#f5f5f4', borderRadius: '6px', marginTop: '16px' }}>
                 <p style={{ margin: 0, fontWeight: 'bold', color: '#78716c' }}>No equipment matches your search terms. Try broadening your criteria.</p>
+              </div>
+            ) : (
+              /* --- Grid Presentation Wrapper --- */
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '24px' }}>
+                {filteredItems.map((item) => (
+                  <article 
+                    key={item.id}
+                    style={{ backgroundColor: '#ffffff', border: '3px solid #000000', borderRadius: '8px', overflow: 'hidden', display: 'flex', flexDirection: 'column', boxShadow: '4px 4px 0px #000000' }}
+                  >
+                    <div style={{ padding: '16px', flexGrow: 1 }}>
+                      <h3 style={{ margin: '0 0 8px 0', fontSize: '18px', fontWeight: '800' }}>{item.title}</h3>
+                      <p style={{ margin: 0, color: '#57534e', fontSize: '14px', lineHeight: '1.4' }}>{item.description}</p>
+                    </div>
+                  </article>
+                ))}
               </div>
             )}
           </div>
