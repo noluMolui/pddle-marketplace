@@ -207,7 +207,7 @@ export function App() {
           </div>
         )}
 
-        {/* ================= VIEW 2: PRODUCT DETAIL LAYOUT SKELETON ================= */}
+        {/* ================= VIEW 2: PRODUCT DETAIL PAGE ================= */}
         {currentView === 'detail' && (
           <div>
             <button 
@@ -222,8 +222,34 @@ export function App() {
                 Item configuration record missing or unavailable.
               </div>
             ) : (
-              <div>
-                <p style={{ fontWeight: 'bold' }}>Detail framework for "{currentItem.title}" set up. Panels drop in next.</p>
+              /* Responsive Split Column View Grid Layout */
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '32px', alignItems: 'start' }}>
+                
+                {/* Column Left: Visual Artwork Frame Wrapper */}
+                <div style={{ backgroundColor: '#ffffff', border: '3px solid #000000', borderRadius: '8px', overflow: 'hidden', boxShadow: '6px 6px 0px #000000' }}>
+                  <div style={{ height: '360px', backgroundColor: '#e7e5e4', borderBottom: '3px solid #000000' }}>
+                    <img 
+                      src={currentItem.imageUrl} 
+                      alt={currentItem.title}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                  </div>
+                  <div style={{ padding: '24px' }}>
+                    <span style={{ display: 'inline-block', backgroundColor: '#000000', color: '#ffffff', padding: '4px 8px', fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase', borderRadius: '4px', marginBottom: '12px' }}>
+                      {currentItem.category}
+                    </span>
+                    <h2 style={{ fontSize: '28px', fontWeight: '900', margin: '0 0 12px 0', letterSpacing: '-0.5px' }}>{currentItem.title}</h2>
+                    <p style={{ margin: 0, color: '#44403c', fontSize: '16px', lineHeight: '1.6' }}>{currentItem.description}</p>
+                  </div>
+                </div>
+
+                {/* Column Right: Action Management Shell */}
+                <div>
+                  <div style={{ backgroundColor: '#ffffff', border: '3px solid #000000', borderRadius: '8px', padding: '24px', boxShadow: '6px 6px 0px #000000', marginBottom: '24px' }}>
+                    <p style={{ margin: 0, fontWeight: 'bold' }}>Metadata action controls will anchor here.</p>
+                  </div>
+                </div>
+
               </div>
             )}
           </div>
