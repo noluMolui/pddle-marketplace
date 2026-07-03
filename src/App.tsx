@@ -54,6 +54,27 @@ export function App() {
   // Derived Target Selection
   const currentItem = items.find(i => i.id === selectedItemId) || null;
 
+  // --- Event Handlers ---
+  const handleAuthSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!authEmail || !authEmail.includes('@')) {
+      setAuthError('Please enter a valid email address.');
+      return;
+    }
+    setAuthError('');
+    setIsAuthenticated(true);
+    setShowAuthModal(false);
+  };
+
+  const handleSignOut = () => {
+    setIsAuthenticated(false);
+    setAuthEmail('');
+    setIsBookingConfirmed(false);
+    if (currentView === 'booking') {
+      setCurrentView('detail');
+    }
+  };
+
   // Render defensive loading state fallback
   if (loading) {
     return (
@@ -84,12 +105,20 @@ export function App() {
         </h1>
         <div>
           {isAuthenticated ? (
-            <div style={{ fontSize: '14px', border: '2px solid #000000', padding: '6px 12px', backgroundColor: '#fef08a', fontWeight: 'bold' }}>
-              User: {authEmail}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div style={{ fontSize: '14px', border: '2px solid #000000', padding: '6px 12px', backgroundColor: '#fef08a', fontWeight: 'bold' }}>
+                User: {authEmail}
+              </div>
+              <button 
+                onClick={handleSignOut}
+                style={{ backgroundColor: '#ef4444', color: '#fff', border: '2px solid #000000', padding: '6px 12px', fontWeight: 'bold', cursor: 'pointer', fontSize: '13px', boxShadow: '2px 2px 0px #000000' }}
+              >
+                Sign Out
+              </button>
             </div>
           ) : (
             <button 
-              onClick={() => setShowAuthModal(true)}
+              onClick={() => { setAuthError(''); setShowAuthModal(true); }}
               style={{ backgroundColor: '#2563eb', color: '#fff', border: '2px solid #000000', padding: '8px 16px', fontWeight: 'bold', cursor: 'pointer', boxShadow: '3px 3px 0px #000000' }}
             >
               Sign In
@@ -321,7 +350,7 @@ export function App() {
                   <div style={{ textAlign: 'center', padding: '12px' }}>
                     <p style={{ margin: '0 0 16px 0', fontWeight: 'bold', color: '#ef4444' }}>Authentication verified account sign-in required to process requests.</p>
                     <button 
-                      onClick={() => setShowAuthModal(true)}
+                      onClick={() => { setAuthError(''); setShowAuthModal(true); }}
                       style={{ backgroundColor: '#2563eb', color: '#ffffff', border: '2px solid #000000', padding: '10px 20px', fontWeight: 'bold', cursor: 'pointer', boxShadow: '3px 3px 0px #000000' }}
                     >
                       Sign In Instantly
@@ -375,6 +404,53 @@ export function App() {
         )}
 
       </main>
+
+      {/* ================= GLOBAL MODAL: ACCOUNT AUTH OVERLAY ================= */}
+      {showAuthModal && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(28, 25, 23, 0.65)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 100, padding: '16px' }}>
+          <div style={{ backgroundColor: '#ffffff', border: '3px solid #000000', borderRadius: '8px', padding: '24px', maxWidth: '400px', width: '100%', boxSizing: 'border-box', boxShadow: '8px 8px 0px #000000', position: 'relative' }}>
+            
+            <button 
+              onClick={() => setShowAuthModal(false)}
+              style={{ position: 'absolute', top: '16px', right: '16px', background: 'none', border: 'none', fontSize: '20px', fontWeight: 'bold', cursor: 'pointer', padding: '4px' }}
+              aria-label="Close authentication modal"
+            >
+              ✕
+            </button>
+
+            <h3 style={{ margin: '0 0 8px 0', fontSize: '22px', fontWeight: '900', letterSpacing: '-0.5px' }}>Welcome to Pddle</h3>
+            <p style={{ margin: '0 0 20px 0', color: '#57534e', fontSize: '14px' }}>Enter your email address to sign in instantly. No complex password required for this build demo.</p>
+
+            <form onSubmit={handleAuthSubmit}>
+              <div style={{ marginBottom: '16px' }}>
+                <label htmlFor="authEmailInput" style={{ display: 'block', fontWeight: '800', marginBottom: '6px', fontSize: '12px', textTransform: 'uppercase' }}>Email Address</label>
+                <input 
+                  id="authEmailInput"
+                  type="email"
+                  placeholder="name@example.com"
+                  value={authEmail}
+                  onChange={(e) => setAuthEmail(e.target.value)}
+                  style={{ width: '100%', padding: '10px', border: '2px solid #000000', borderRadius: '4px', boxSizing: 'border-box', fontSize: '15px', fontWeight: '500' }}
+                  autoFocus
+                />
+              </div>
+
+              {authError && (
+                <div style={{ backgroundColor: '#fee2e2', border: '2px solid #ef4444', color: '#b91c1c', padding: '8px 12px', fontSize: '13px', fontWeight: 'bold', marginBottom: '16px', borderRadius: '4px' }}>
+                  {authError}
+                </div>
+              )}
+
+              <button 
+                type="submit"
+                style={{ width: '100%', backgroundColor: '#2563eb', color: '#ffffff', border: '2px solid #000000', padding: '12px', fontWeight: 'bold', fontSize: '15px', cursor: 'pointer', boxShadow: '3px 3px 0px #000000', boxSizing: 'border-box' }}
+              >
+                Access Platform Account
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
 
     </div>
   );
