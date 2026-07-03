@@ -157,17 +157,42 @@ export function App() {
             ) : (
               /* --- Grid Presentation Wrapper --- */
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '24px' }}>
-                {filteredItems.map((item) => (
-                  <article 
-                    key={item.id}
-                    style={{ backgroundColor: '#ffffff', border: '3px solid #000000', borderRadius: '8px', overflow: 'hidden', display: 'flex', flexDirection: 'column', boxShadow: '4px 4px 0px #000000' }}
-                  >
-                    <div style={{ padding: '16px', flexGrow: 1 }}>
-                      <h3 style={{ margin: '0 0 8px 0', fontSize: '18px', fontWeight: '800' }}>{item.title}</h3>
-                      <p style={{ margin: 0, color: '#57534e', fontSize: '14px', lineHeight: '1.4' }}>{item.description}</p>
-                    </div>
-                  </article>
-                ))}
+                {filteredItems.map((item) => {
+                  // Standardized price rendering parsing calculation
+                  const displayPrice = item.price === null || item.price.amountCents === 0
+                    ? 'Free'
+                    : `$${(item.price.amountCents / 100).toFixed(2)} / ${item.price.period}`;
+
+                  return (
+                    <article 
+                      key={item.id}
+                      style={{ backgroundColor: '#ffffff', border: '3px solid #000000', borderRadius: '8px', overflow: 'hidden', display: 'flex', flexDirection: 'column', boxShadow: '4px 4px 0px #000000' }}
+                    >
+                      {/* Visual Item Cover Image */}
+                      <div style={{ height: '180px', backgroundColor: '#e7e5e4', borderBottom: '3px solid #000000', position: 'relative' }}>
+                        <img 
+                          src={item.imageUrl} 
+                          alt={item.title}
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        />
+                        <span style={{ position: 'absolute', top: '12px', right: '12px', backgroundColor: '#000000', color: '#ffffff', padding: '4px 8px', fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase', borderRadius: '4px' }}>
+                          {item.category}
+                        </span>
+                      </div>
+
+                      <div style={{ padding: '16px', flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                        <div>
+                          <h3 style={{ margin: '0 0 8px 0', fontSize: '18px', fontWeight: '800' }}>{item.title}</h3>
+                          <p style={{ margin: '0 0 16px 0', color: '#57534e', fontSize: '14px', lineHeight: '1.4' }}>{item.description}</p>
+                        </div>
+                        
+                        <div style={{ fontSize: '16px', fontWeight: 'bold', color: item.price?.amountCents ? '#16a34a' : '#2563eb' }}>
+                          {displayPrice}
+                        </div>
+                      </div>
+                    </article>
+                  );
+                })}
               </div>
             )}
           </div>
