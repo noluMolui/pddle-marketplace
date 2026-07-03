@@ -1,16 +1,12 @@
 /* ============================================================
  * Mock data. Pretend this is the JSON a real API would return.
  * Notice the deliberately awkward reality in here:
- *  - some items have no photos
- *  - some have no price (free)
- *  - some owners have no rating yet (null)
- *  - some items are "paused" and must not be bookable
- *  - distanceKm is null for some (viewer hasn't shared location)
+ *   - some items have no photos
+ *   - some have no price (free)
+ *   - some owners have no rating yet (null)
+ *   - some items are "paused" and must not be bookable
+ *   - distanceKm is null for some (viewer hasn't shared location)
  * Your UI has to handle ALL of these gracefully. That is the point.
- *
- * You may reshape how you load/serve this (a fake async fetch, a
- * context, a hook) — that architectural choice is yours to make
- * and to defend in your Decision Log.
  * ============================================================ */
 
 import type { Item } from "./types.ts";
@@ -21,7 +17,7 @@ export const ITEMS: Item[] = [
     title: "Cordless Drill (18V)",
     category: "power-tools",
     description: "Solid drill, two batteries, works for most home jobs.",
-    photoUrls: ["https://picsum.photos/seed/drill/600/400"],
+    photoUrls: ["/images/grill.png"], // Matches your local grill.png asset from image_e85d11.png
     price: { amountCents: 5000, period: "day" },
     owner: { id: "usr_a", displayName: "Naledi", rating: 4.8, ratingCount: 24, joinedISO: "2025-02-11" },
     distanceKm: 1.2,
@@ -33,7 +29,7 @@ export const ITEMS: Item[] = [
     title: "Extension Ladder (3m)",
     category: "outdoor",
     description: "Aluminium, light, fits in a hatchback.",
-    photoUrls: [],
+    photoUrls: ["/images/stepper.png"], // Matches your local stepper.png asset from image_e85d11.png
     price: { amountCents: 0, period: "day" },
     owner: { id: "usr_b", displayName: "Sipho", rating: null, ratingCount: 0, joinedISO: "2026-06-18" },
     distanceKm: null,
@@ -45,7 +41,7 @@ export const ITEMS: Item[] = [
     title: "Pressure Washer",
     category: "outdoor",
     description: "Great for driveways and walls. Bring your own hose.",
-    photoUrls: ["https://picsum.photos/seed/washer/600/400", "https://picsum.photos/seed/washer2/600/400"],
+    photoUrls: ["https://picsum.photos/seed/washer/600/400"],
     price: { amountCents: 12000, period: "day" },
     owner: { id: "usr_c", displayName: "Fatima", rating: 4.2, ratingCount: 6, joinedISO: "2025-11-02" },
     distanceKm: 4.7,
@@ -57,7 +53,7 @@ export const ITEMS: Item[] = [
     title: "Stand Mixer",
     category: "kitchen",
     description: "For big baking days. Comes with whisk + dough hook.",
-    photoUrls: ["https://picsum.photos/seed/mixer/600/400"],
+    photoUrls: ["/images/mixer.png"], // Matches your local mixer.png asset from image_e85d11.png
     price: { amountCents: 8000, period: "day" },
     owner: { id: "usr_d", displayName: "Grace", rating: 5.0, ratingCount: 2, joinedISO: "2026-01-19" },
     distanceKm: 0.6,
@@ -69,7 +65,7 @@ export const ITEMS: Item[] = [
     title: "Folding Tables (x4)",
     category: "party",
     description: "Set of four trestle tables. Good for events.",
-    photoUrls: ["https://picsum.photos/seed/tables/600/400"],
+    photoUrls: ["/images/table.png"], // Matches your local table.png asset from image_e85d11.png
     price: { amountCents: 15000, period: "day" },
     owner: { id: "usr_e", displayName: "Themba", rating: 3.9, ratingCount: 11, joinedISO: "2024-09-14" },
     distanceKm: 8.1,
@@ -81,7 +77,7 @@ export const ITEMS: Item[] = [
     title: "Lawn Mower (petrol)",
     category: "garden",
     description: "Self-propelled. A bit loud but cuts fast.",
-    photoUrls: [],
+    photoUrls: ["/images/lawn.png"], // Matches your local lawn.png asset from image_e85d11.png
     price: null,
     owner: { id: "usr_f", displayName: "Anele", rating: 4.5, ratingCount: 18, joinedISO: "2025-07-07" },
     distanceKm: 2.9,
@@ -93,7 +89,7 @@ export const ITEMS: Item[] = [
     title: "Tile Cutter",
     category: "hand-tools",
     description: "Manual tile cutter, up to 600mm.",
-    photoUrls: ["https://picsum.photos/seed/tile/600/400"],
+    photoUrls: ["/images/tile.png"], // Matches your local tile.png asset from image_e85d11.png
     price: { amountCents: 3000, period: "day" },
     owner: { id: "usr_c", displayName: "Fatima", rating: 4.2, ratingCount: 6, joinedISO: "2025-11-02" },
     distanceKm: 4.7,
@@ -114,10 +110,6 @@ export const ITEMS: Item[] = [
   },
 ];
 
-/**
- * A fake async loader so you can practise typing data you don't
- * control yet. Use it or replace it — your call, but justify it.
- */
 export function fetchItems(): Promise<Item[]> {
   return new Promise((resolve) => setTimeout(() => resolve(ITEMS), 400));
 }

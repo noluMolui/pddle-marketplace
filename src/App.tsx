@@ -209,9 +209,10 @@ export function App() {
                       key={item.id}
                       style={{ backgroundColor: '#ffffff', border: '3px solid #000000', borderRadius: '8px', overflow: 'hidden', display: 'flex', flexDirection: 'column', boxShadow: '4px 4px 0px #000000' }}
                     >
+                      {/* View 1 Image Wrapper */}
                       <div style={{ height: '180px', backgroundColor: '#e7e5e4', borderBottom: '3px solid #000000', position: 'relative' }}>
                         <img 
-                          src={item.imageUrl} 
+                          src={item.photoUrls && item.photoUrls[0] ? item.photoUrls[0] : "https://via.placeholder.com/600x400"} 
                           alt={item.title}
                           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                         />
@@ -266,11 +267,11 @@ export function App() {
             ) : (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '32px', alignItems: 'start' }}>
                 
-                {/* Column Left: Visual Artwork Frame Wrapper */}
+                {/* Column Left: Visual Artwork Frame Wrapper (View 2 Image) */}
                 <div style={{ backgroundColor: '#ffffff', border: '3px solid #000000', borderRadius: '8px', overflow: 'hidden', boxShadow: '6px 6px 0px #000000' }}>
                   <div style={{ height: '360px', backgroundColor: '#e7e5e4', borderBottom: '3px solid #000000' }}>
                     <img 
-                      src={currentItem.imageUrl} 
+                      src={currentItem.photoUrls && currentItem.photoUrls[0] ? currentItem.photoUrls[0] : "https://via.placeholder.com/600x400"} 
                       alt={currentItem.title}
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                     />
@@ -294,7 +295,7 @@ export function App() {
 
                     <div style={{ borderTop: '2px solid #e7e5e4', paddingTop: '16px', marginBottom: '24px' }}>
                       <span style={{ fontSize: '13px', textTransform: 'uppercase', fontWeight: '800', color: '#78716c', display: 'block', marginBottom: '6px' }}>Lender Profile</span>
-                      <div style={{ fontWeight: 'bold', fontSize: '15px' }}>{currentItem.owner.name}</div>
+                      <div style={{ fontWeight: 'bold', fontSize: '15px' }}>{currentItem.owner.displayName}</div>
                       <div style={{ fontSize: '13px', color: '#57534e', marginTop: '2px' }}>📍 Nearby Community Member</div>
                     </div>
 
@@ -328,18 +329,18 @@ export function App() {
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '32px', alignItems: 'start' }}>
               
-              {/* Checkout Column Left: Item Reference Header */}
+              {/* Checkout Column Left: Item Reference Header (View 3 Image) */}
               <div style={{ backgroundColor: '#ffffff', border: '3px solid #000000', borderRadius: '8px', padding: '24px', boxShadow: '6px 6px 0px #000000' }}>
                 <h3 style={{ fontSize: '20px', fontWeight: '900', margin: '0 0 16px 0' }}>Confirm Your Reservation</h3>
                 <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
                   <img 
-                    src={currentItem.imageUrl} 
+                    src={currentItem.photoUrls && currentItem.photoUrls[0] ? currentItem.photoUrls[0] : "https://via.placeholder.com/80x80"} 
                     alt={currentItem.title} 
                     style={{ width: '80px', height: '80px', objectFit: 'cover', border: '2px solid #000000', borderRadius: '4px' }}
                   />
                   <div>
                     <h4 style={{ margin: '0 0 4px 0', fontSize: '18px', fontWeight: '800' }}>{currentItem.title}</h4>
-                    <p style={{ margin: 0, color: '#57534e', fontSize: '14px' }}>Lender: {currentItem.owner.name}</p>
+                    <p style={{ margin: 0, color: '#57534e', fontSize: '14px' }}>Lender: {currentItem.owner.displayName}</p>
                   </div>
                 </div>
               </div>
@@ -351,7 +352,7 @@ export function App() {
                     <p style={{ margin: '0 0 16px 0', fontWeight: 'bold', color: '#ef4444' }}>Authentication verified account sign-in required to process requests.</p>
                     <button 
                       onClick={() => { setAuthError(''); setShowAuthModal(true); }}
-                      style={{ backgroundColor: '#2563eb', color: '#ffffff', border: '2px solid #000000', padding: '10px 20px', fontWeight: 'bold', cursor: 'pointer', boxShadow: '3px 3px 0px #000000' }}
+                      style={{ backgroundColor: '#2563eb', color: '#ffffff', border: '3px solid #000000', padding: '10px 20px', fontWeight: 'bold', cursor: 'pointer', boxShadow: '3px 3px 0px #000000' }}
                     >
                       Sign In Instantly
                     </button>
@@ -360,7 +361,7 @@ export function App() {
                   <div style={{ textAlign: 'center', padding: '16px 0', backgroundColor: '#f0fdf4', border: '2px solid #16a34a', borderRadius: '4px' }}>
                     <h4 style={{ margin: '0 0 8px 0', fontSize: '20px', fontWeight: '900', color: '#16a34a' }}>🎉 Reservation Confirmed!</h4>
                     <p style={{ margin: 0, fontSize: '14px', color: '#166534', fontWeight: '500', padding: '0 12px' }}>
-                      We notified {currentItem.owner.name}. Check your email inbox at <strong>{authEmail}</strong> for delivery arrangements!
+                      We notified {currentItem.owner.displayName}. Check your email inbox at <strong>{authEmail}</strong> for delivery arrangements!
                     </p>
                   </div>
                 ) : (
