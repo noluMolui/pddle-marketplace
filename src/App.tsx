@@ -61,6 +61,11 @@ export function App() {
     );
   }
 
+  // Calculate detailed views display rates pricing
+  const detailDisplayPrice = currentItem && (currentItem.price === null || currentItem.price.amountCents === 0)
+    ? 'Free (Community Share)'
+    : currentItem ? `$${(currentItem.price!.amountCents / 100).toFixed(2)} per ${currentItem.price!.period}` : '';
+
   return (
     <div style={{ fontFamily: 'system-ui, sans-serif', backgroundColor: '#fafaf9', minHeight: '100vh', color: '#1c1917', paddingBottom: '60px' }}>
       
@@ -222,7 +227,6 @@ export function App() {
                 Item configuration record missing or unavailable.
               </div>
             ) : (
-              /* Responsive Split Column View Grid Layout */
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '32px', alignItems: 'start' }}>
                 
                 {/* Column Left: Visual Artwork Frame Wrapper */}
@@ -243,10 +247,26 @@ export function App() {
                   </div>
                 </div>
 
-                {/* Column Right: Action Management Shell */}
+                {/* Column Right: Action Booking Board Container */}
                 <div>
                   <div style={{ backgroundColor: '#ffffff', border: '3px solid #000000', borderRadius: '8px', padding: '24px', boxShadow: '6px 6px 0px #000000', marginBottom: '24px' }}>
-                    <p style={{ margin: 0, fontWeight: 'bold' }}>Metadata action controls will anchor here.</p>
+                    <div style={{ marginBottom: '20px' }}>
+                      <span style={{ fontSize: '13px', textTransform: 'uppercase', fontWeight: '800', color: '#78716c', display: 'block', marginBottom: '4px' }}>Rental Cost</span>
+                      <div style={{ fontSize: '24px', fontWeight: '900', color: '#1c1917' }}>{detailDisplayPrice}</div>
+                    </div>
+
+                    <div style={{ borderTop: '2px solid #e7e5e4', paddingTop: '16px', marginBottom: '24px' }}>
+                      <span style={{ fontSize: '13px', textTransform: 'uppercase', fontWeight: '800', color: '#78716c', display: 'block', marginBottom: '6px' }}>Lender Profile</span>
+                      <div style={{ fontWeight: 'bold', fontSize: '15px' }}>{currentItem.owner.name}</div>
+                      <div style={{ fontSize: '13px', color: '#57534e', marginTop: '2px' }}>📍 Nearby Community Member</div>
+                    </div>
+
+                    <button
+                      onClick={() => setCurrentView('booking')}
+                      style={{ width: '100%', backgroundColor: '#2563eb', color: '#ffffff', border: '3px solid #000000', padding: '14px', fontWeight: 'bold', fontSize: '16px', cursor: 'pointer', boxShadow: '4px 4px 0px #000000', textAlign: 'center', boxSizing: 'border-box' }}
+                    >
+                      Book This Item
+                    </button>
                   </div>
                 </div>
 
