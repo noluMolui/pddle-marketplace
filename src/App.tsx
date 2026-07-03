@@ -11,6 +11,12 @@ export function App() {
   const [currentView, setCurrentView] = useState<'browse' | 'detail' | 'booking'>('browse');
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
 
+  // Authentication Management States
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [authEmail, setAuthEmail] = useState<string>('');
+  const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
+  const [authError, setAuthError] = useState<string>('');
+
   // Search and Filter Configuration States
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<Category | 'all'>('all');
@@ -26,17 +32,13 @@ export function App() {
 
   // --- Defensive Search and Filtering Engine ---
   const filteredItems = items.filter((item) => {
-    // TRAP CHECK: Automatically prune items flagged as 'removed'
     if (item.status === 'removed') return false;
 
-    // 1. Text Search Evaluation
     const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           item.description.toLowerCase().includes(searchQuery.toLowerCase());
 
-    // 2. Strict Category Matching
     const matchesCategory = selectedCategory === 'all' || item.category === selectedCategory;
 
-    // 3. Price Classification Logic (Handles both null price values and 0-cent items as free)
     const isFree = item.price === null || item.price.amountCents === 0;
     const matchesPrice = priceFilter === 'all' || 
                          (priceFilter === 'free' && isFree) || 
@@ -62,9 +64,57 @@ export function App() {
   return (
     <div style={{ fontFamily: 'system-ui, sans-serif', backgroundColor: '#fafaf9', minHeight: '100vh', color: '#1c1917', paddingBottom: '60px' }}>
       
-      
+      {/* --- Global Header --- */}
+      <header style={{ backgroundColor: '#ffffff', borderBottom: '3px solid #000000', padding: '16px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, zIndex: 10 }}>
+        <h1 style={{ margin: 0, fontSize: '26px', fontWeight: '900', letterSpacing: '-0.5px', cursor: 'pointer' }} onClick={() => setCurrentView('browse')}>
+          Pddle
+        </h1>
+        <div>
+          {isAuthenticated ? (
+            <div style={{ fontSize: '14px', border: '2px solid #000000', padding: '6px 12px', backgroundColor: '#fef08a', fontWeight: 'bold' }}>
+              User: {authEmail}
+            </div>
+          ) : (
+            <button 
+              onClick={() => setShowAuthModal(true)}
+              style={{ backgroundColor: '#2563eb', color: '#fff', border: '2px solid #000000', padding: '8px 16px', fontWeight: 'bold', cursor: 'pointer', boxShadow: '3px 3px 0px #000000' }}
+            >
+              Sign In
+            </button>
+          )}
+        </div>
+      </header>
+
+      {/* --- Main App Body Layout Container --- */}
       <main style={{ maxWidth: 1100, margin: '0 auto', padding: '24px' }}>
-        <p style={{ fontWeight: 'bold' }}>Base architecture established. Views will branch from here.</p>
+        
+        {/* ================= VIEW 1: BROWSE METROPOLIS ================= */}
+        {currentView === 'browse' && (
+          <div>
+            <div style={{ marginBottom: '32px' }}>
+              <h2 style={{ fontSize: '32px', fontWeight: '800', margin: '0 0 8px 0', letterSpacing: '-0.5px' }}>Borrow Equipment Locally</h2>
+              <p style={{ margin: 0, color: '#57534e', fontSize: '16px' }}>Save money, reduce waste, and connect with neighbors near you.</p>
+            </div>
+
+            {/* Human Search & Filtering UI Panel SKELETON */}
+            <section style={{ backgroundColor: '#ffffff', border: '3px solid #000000', borderRadius: '8px', padding: '20px', marginBottom: '32px', boxShadow: '6px 6px 0px #000000' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px' }}>
+                <div>
+                  <label htmlFor="search" style={{ display: 'block', fontWeight: '800', marginBottom: '6px', fontSize: '13px', textTransform: 'uppercase' }}>Search Items</label>
+                  <input 
+                    id="search"
+                    type="text" 
+                    placeholder="Search tools, garden gear..." 
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '2px solid #000000', boxSizing: 'border-box', fontWeight: '500' }}
+                  />
+                </div>
+              </div>
+            </section>
+          </div>
+        )}
+
       </main>
 
     </div>
