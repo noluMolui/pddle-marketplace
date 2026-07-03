@@ -144,6 +144,17 @@ export function App() {
                 </div>
               </div>
             </section>
+
+            {/* --- Results Counter & Fallback Shell --- */}
+            <div style={{ marginBottom: '20px', fontWeight: 'bold', fontSize: '15px' }}>
+              Showing {filteredItems.length} available {filteredItems.length === 1 ? 'item' : 'items'}
+            </div>
+
+            {filteredItems.length === 0 && (
+              <div style={{ textAlign: 'center', padding: '48px', border: '2px dashed #a8a29e', backgroundColor: '#f5f5f4', borderRadius: '6px', marginTop: '16px' }}>
+                <p style={{ margin: 0, fontWeight: 'bold', color: '#78716c' }}>No equipment matches your search terms. Try broadening your criteria.</p>
+              </div>
+            )}
           </div>
         )}
 
