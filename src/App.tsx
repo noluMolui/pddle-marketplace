@@ -96,7 +96,7 @@ export function App() {
               <p style={{ margin: 0, color: '#57534e', fontSize: '16px' }}>Save money, reduce waste, and connect with neighbors near you.</p>
             </div>
 
-            {/* Human Search & Filtering UI Panel SKELETON */}
+            {/* Human Search & Filtering UI Panel */}
             <section style={{ backgroundColor: '#ffffff', border: '3px solid #000000', borderRadius: '8px', padding: '20px', marginBottom: '32px', boxShadow: '6px 6px 0px #000000' }}>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px' }}>
                 <div>
@@ -109,6 +109,38 @@ export function App() {
                     onChange={(e) => setSearchQuery(e.target.value)}
                     style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '2px solid #000000', boxSizing: 'border-box', fontWeight: '500' }}
                   />
+                </div>
+
+                <div>
+                  <label htmlFor="category" style={{ display: 'block', fontWeight: '800', marginBottom: '6px', fontSize: '13px', textTransform: 'uppercase' }}>Category</label>
+                  <select 
+                    id="category"
+                    value={selectedCategory} 
+                    onChange={(e) => setSelectedCategory(e.target.value as Category | 'all')}
+                    style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '2px solid #000000', boxSizing: 'border-box', backgroundColor: '#fff', fontWeight: '500', height: '42px' }}
+                  >
+                    <option value="all">All Categories</option>
+                    <option value="tools">Tools</option>
+                    <option value="garden">Garden</option>
+                    <option value="kitchen">Kitchen</option>
+                    <option value="sports">Sports</option>
+                    <option value="electronics">Electronics</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label htmlFor="price" style={{ display: 'block', fontWeight: '800', marginBottom: '6px', fontSize: '13px', textTransform: 'uppercase' }}>Price Range</label>
+                  <select 
+                    id="price"
+                    value={priceFilter} 
+                    onChange={(e) => setPriceFilter(e.target.value as 'all' | 'free' | 'paid')}
+                    style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '2px solid #000000', boxSizing: 'border-box', backgroundColor: '#fff', fontWeight: '500', height: '42px' }}
+                  >
+                    <option value="all">Any Price</option>
+                    <option value="free">Free / Community Shared</option>
+                    <option value="paid">Paid Rentals</option>
+                  </select>
                 </div>
               </div>
             </section>
