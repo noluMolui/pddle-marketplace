@@ -22,6 +22,10 @@ export function App() {
   const [selectedCategory, setSelectedCategory] = useState<Category | 'all'>('all');
   const [priceFilter, setPriceFilter] = useState<'all' | 'free' | 'paid'>('all');
 
+  // Checkout and Duration Calculation States
+  const [rentalDays, setRentalDays] = useState<number>(3);
+  const [isBookingConfirmed, setIsBookingConfirmed] = useState<boolean>(false);
+
   // --- Initial Data Load ---
   useEffect(() => {
     fetchItems().then((data) => {
@@ -61,8 +65,12 @@ export function App() {
     );
   }
 
-  // Calculate detailed views display rates pricing
-  const detailDisplayPrice = currentItem && (currentItem.price === null || currentItem.price.amountCents === 0)
+  // Cost and Statement Formulations
+  const basePriceCents = currentItem?.price?.amountCents || 0;
+  const isItemFree = currentItem?.price === null || basePriceCents === 0;
+  const totalCostDollars = ((basePriceCents * rentalDays) / 100).toFixed(2);
+
+  const detailDisplayPrice = currentItem && isItemFree
     ? 'Free (Community Share)'
     : currentItem ? `$${(currentItem.price!.amountCents / 100).toFixed(2)} per ${currentItem.price!.period}` : '';
 
@@ -71,7 +79,7 @@ export function App() {
       
       {/* --- Global Header --- */}
       <header style={{ backgroundColor: '#ffffff', borderBottom: '3px solid #000000', padding: '16px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, zIndex: 10 }}>
-        <h1 style={{ margin: 0, fontSize: '26px', fontWeight: '900', letterSpacing: '-0.5px', cursor: 'pointer' }} onClick={() => { setCurrentView('browse'); setSelectedItemId(null); }}>
+        <h1 style={{ margin: 0, fontSize: '26px', fontWeight: '900', letterSpacing: '-0.5px', cursor: 'pointer' }} onClick={() => { setCurrentView('browse'); setSelectedItemId(null); setIsBookingConfirmed(false); }}>
           Pddle
         </h1>
         <div>
@@ -262,7 +270,11 @@ export function App() {
                     </div>
 
                     <button
-                      onClick={() => setCurrentView('booking')}
+                      onClick={() => {
+                        setRentalDays(3);
+                        setIsBookingConfirmed(false);
+                        setCurrentView('booking');
+                      }}
                       style={{ width: '100%', backgroundColor: '#2563eb', color: '#ffffff', border: '3px solid #000000', padding: '14px', fontWeight: 'bold', fontSize: '16px', cursor: 'pointer', boxShadow: '4px 4px 0px #000000', textAlign: 'center', boxSizing: 'border-box' }}
                     >
                       Book This Item
@@ -272,6 +284,93 @@ export function App() {
 
               </div>
             )}
+          </div>
+        )}
+
+        {/* ================= VIEW 3: CHECKOUT CONFIRMATION OVERVIEW ================= */}
+        {currentView === 'booking' && currentItem && (
+          <div>
+            <button 
+              onClick={() => { setCurrentView('detail'); setIsBookingConfirmed(false); }}
+              style={{ background: 'none', border: 'none', color: '#2563eb', fontWeight: 'bold', cursor: 'pointer', padding: 0, fontSize: '15px', marginBottom: '24px' }}
+            >
+              ← Back to item specifications
+            </button>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '32px', alignItems: 'start' }}>
+              
+              {/* Checkout Column Left: Item Reference Header */}
+              <div style={{ backgroundColor: '#ffffff', border: '3px solid #000000', borderRadius: '8px', padding: '24px', boxShadow: '6px 6px 0px #000000' }}>
+                <h3 style={{ fontSize: '20px', fontWeight: '900', margin: '0 0 16px 0' }}>Confirm Your Reservation</h3>
+                <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+                  <img 
+                    src={currentItem.imageUrl} 
+                    alt={currentItem.title} 
+                    style={{ width: '80px', height: '80px', objectFit: 'cover', border: '2px solid #000000', borderRadius: '4px' }}
+                  />
+                  <div>
+                    <h4 style={{ margin: '0 0 4px 0', fontSize: '18px', fontWeight: '800' }}>{currentItem.title}</h4>
+                    <p style={{ margin: 0, color: '#57534e', fontSize: '14px' }}>Lender: {currentItem.owner.name}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Checkout Column Right: Live Pricing Calculation System */}
+              <div style={{ backgroundColor: '#ffffff', border: '3px solid #000000', borderRadius: '8px', padding: '24px', boxShadow: '6px 6px 0px #000000' }}>
+                {!isAuthenticated ? (
+                  <div style={{ textAlign: 'center', padding: '12px' }}>
+                    <p style={{ margin: '0 0 16px 0', fontWeight: 'bold', color: '#ef4444' }}>Authentication verified account sign-in required to process requests.</p>
+                    <button 
+                      onClick={() => setShowAuthModal(true)}
+                      style={{ backgroundColor: '#2563eb', color: '#ffffff', border: '2px solid #000000', padding: '10px 20px', fontWeight: 'bold', cursor: 'pointer', boxShadow: '3px 3px 0px #000000' }}
+                    >
+                      Sign In Instantly
+                    </button>
+                  </div>
+                ) : isBookingConfirmed ? (
+                  <div style={{ textAlign: 'center', padding: '16px 0', backgroundColor: '#f0fdf4', border: '2px solid #16a34a', borderRadius: '4px' }}>
+                    <h4 style={{ margin: '0 0 8px 0', fontSize: '20px', fontWeight: '900', color: '#16a34a' }}>🎉 Reservation Confirmed!</h4>
+                    <p style={{ margin: 0, fontSize: '14px', color: '#166534', fontWeight: '500', padding: '0 12px' }}>
+                      We notified {currentItem.owner.name}. Check your email inbox at <strong>{authEmail}</strong> for delivery arrangements!
+                    </p>
+                  </div>
+                ) : (
+                  <div>
+                    <div style={{ marginBottom: '20px' }}>
+                      <label htmlFor="duration" style={{ display: 'block', fontWeight: '800', marginBottom: '8px', fontSize: '13px', textTransform: 'uppercase' }}>Rental Duration (Days)</label>
+                      <input 
+                        id="duration"
+                        type="number" 
+                        min="1" 
+                        max="30" 
+                        value={rentalDays}
+                        onChange={(e) => setRentalDays(Math.max(1, parseInt(e.target.value) || 1))}
+                        style={{ width: '100%', padding: '10px', border: '2px solid #000000', borderRadius: '4px', boxSizing: 'border-box', fontWeight: 'bold', fontSize: '16px' }}
+                      />
+                    </div>
+
+                    <div style={{ borderTop: '2px dashed #000000', paddingTop: '16px', marginBottom: '20px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold', marginBottom: '8px' }}>
+                        <span>Rate Statement:</span>
+                        <span>{isItemFree ? 'Free' : `$${(basePriceCents / 100).toFixed(2)} / day`}</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '20px', fontWeight: '900', borderTop: '2px solid #000000', paddingTop: '12px', marginTop: '12px' }}>
+                        <span>Estimated Total:</span>
+                        <span style={{ color: isItemFree ? '#2563eb' : '#16a34a' }}>{isItemFree ? 'Free' : `$${totalCostDollars}`}</span>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => setIsBookingConfirmed(true)}
+                      style={{ width: '100%', backgroundColor: '#16a34a', color: '#ffffff', border: '3px solid #000000', padding: '14px', fontWeight: 'bold', fontSize: '16px', cursor: 'pointer', boxShadow: '4px 4px 0px #000000' }}
+                    >
+                      Confirm Order Request
+                    </button>
+                  </div>
+                )}
+              </div>
+
+            </div>
           </div>
         )}
 
