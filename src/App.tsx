@@ -66,7 +66,7 @@ export function App() {
       
       {/* --- Global Header --- */}
       <header style={{ backgroundColor: '#ffffff', borderBottom: '3px solid #000000', padding: '16px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, zIndex: 10 }}>
-        <h1 style={{ margin: 0, fontSize: '26px', fontWeight: '900', letterSpacing: '-0.5px', cursor: 'pointer' }} onClick={() => setCurrentView('browse')}>
+        <h1 style={{ margin: 0, fontSize: '26px', fontWeight: '900', letterSpacing: '-0.5px', cursor: 'pointer' }} onClick={() => { setCurrentView('browse'); setSelectedItemId(null); }}>
           Pddle
         </h1>
         <div>
@@ -158,7 +158,6 @@ export function App() {
               /* --- Grid Presentation Wrapper --- */
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '24px' }}>
                 {filteredItems.map((item) => {
-                  // Standardized price rendering parsing calculation
                   const displayPrice = item.price === null || item.price.amountCents === 0
                     ? 'Free'
                     : `$${(item.price.amountCents / 100).toFixed(2)} / ${item.price.period}`;
@@ -168,7 +167,6 @@ export function App() {
                       key={item.id}
                       style={{ backgroundColor: '#ffffff', border: '3px solid #000000', borderRadius: '8px', overflow: 'hidden', display: 'flex', flexDirection: 'column', boxShadow: '4px 4px 0px #000000' }}
                     >
-                      {/* Visual Item Cover Image */}
                       <div style={{ height: '180px', backgroundColor: '#e7e5e4', borderBottom: '3px solid #000000', position: 'relative' }}>
                         <img 
                           src={item.imageUrl} 
@@ -186,13 +184,46 @@ export function App() {
                           <p style={{ margin: '0 0 16px 0', color: '#57534e', fontSize: '14px', lineHeight: '1.4' }}>{item.description}</p>
                         </div>
                         
-                        <div style={{ fontSize: '16px', fontWeight: 'bold', color: item.price?.amountCents ? '#16a34a' : '#2563eb' }}>
-                          {displayPrice}
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto' }}>
+                          <span style={{ fontSize: '16px', fontWeight: 'bold', color: item.price?.amountCents ? '#16a34a' : '#2563eb' }}>
+                            {displayPrice}
+                          </span>
+                          <button
+                            onClick={() => {
+                              setSelectedItemId(item.id);
+                              setCurrentView('detail');
+                            }}
+                            style={{ backgroundColor: '#ffffff', color: '#000000', border: '2px solid #000000', padding: '6px 12px', fontWeight: 'bold', fontSize: '13px', cursor: 'pointer', boxShadow: '2px 2px 0px #000000' }}
+                          >
+                            View Details
+                          </button>
                         </div>
                       </div>
                     </article>
                   );
                 })}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ================= VIEW 2: PRODUCT DETAIL LAYOUT SKELETON ================= */}
+        {currentView === 'detail' && (
+          <div>
+            <button 
+              onClick={() => { setCurrentView('browse'); setSelectedItemId(null); }}
+              style={{ background: 'none', border: 'none', color: '#2563eb', fontWeight: 'bold', cursor: 'pointer', padding: 0, fontSize: '15px', marginBottom: '24px', display: 'inline-flex', alignItems: 'center' }}
+            >
+              ← Back to equipment listings
+            </button>
+
+            {!currentItem ? (
+              <div style={{ padding: '24px', backgroundColor: '#fee2e2', border: '2px solid #ef4444', fontWeight: 'bold' }}>
+                Item configuration record missing or unavailable.
+              </div>
+            ) : (
+              <div>
+                <p style={{ fontWeight: 'bold' }}>Detail framework for "{currentItem.title}" set up. Panels drop in next.</p>
               </div>
             )}
           </div>
